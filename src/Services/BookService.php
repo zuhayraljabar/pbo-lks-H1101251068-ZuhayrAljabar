@@ -68,4 +68,46 @@ class BookService
             'stok'    => $b->getStok(),
         ];
     }
+
+    public function detail(int $id): array
+    {
+        $book = $this->repo->findById($id);
+
+        if ($book === null) {
+            throw new \InvalidArgumentException('Buku tidak ditemukan.', 404);
+        }
+
+        return $this->toArray($book);
+    }
+
+    public function update(int $id, array $data): array
+    {
+        $existing = $this->repo->findById($id);
+        if ($existing === null) {
+            throw new \InvalidArgumentException('Buku tidak ditemukan.', 404);
+        }
+
+        $this->validate($data);
+
+        $book = new Book(
+            id: $id,
+            judul: trim($data['judul']),
+            penulis: trim($data['penulis']),
+            tahun: (int) $data['tahun'],
+            stok: (int) ($data['stok'] ?? 0)
+        );
+
+        $this->repo->update($book);
+
+        return $this->toArray($this->repo->findById($id));
+    }
+
+    public function delete(int $id): void
+    {
+        if ($this->repo->findById($id) === null) {
+            throw new \InvalidArgumentException('Buku tidak ditemukan.', 404);
+        }
+
+        $this->repo->delete($id);
+    }
 }
