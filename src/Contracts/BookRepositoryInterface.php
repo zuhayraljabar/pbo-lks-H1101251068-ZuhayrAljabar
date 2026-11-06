@@ -4,9 +4,6 @@ namespace App\Contracts;
 
 use App\Models\Book;
 
-/**
- * BookRepositoryInterface — kontrak akses data buku.
- */
 interface BookRepositoryInterface
 {
     /** @return Book[] */
